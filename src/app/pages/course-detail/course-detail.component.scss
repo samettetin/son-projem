@@ -1,0 +1,21 @@
+.course-detail{
+  background:#fff; border-radius:16px; padding:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  header{
+    h1{ margin:0; }
+    .desc{ color:#475569; }
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 12px;
+      .chip{ background:#0f172a; color:#fff; border-radius:999px; padding:4px 10px; font-size:12px;
+        &.ghost{ background:#f1f5f9; color:#0f172a; border:1px solid #e5e7eb; }
+      }
+    }
+  }
+  .mods{
+    h3{ margin:12px 0; }
+    ul{ list-style:none; padding:0; display:grid; gap:8px;
+      li{ display:flex; align-items:center; gap:8px; background:#f8fafc; border:1px solid #e5e7eb; padding:10px 12px; border-radius:10px; }
+      .req{ color:#16a34a; font-weight:700; }
+    }
+  }
+}
+.empty{ background:#fff; border-radius:16px; padding:28px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.06); color:#64748b; }

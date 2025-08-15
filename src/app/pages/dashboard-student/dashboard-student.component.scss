@@ -1,0 +1,44 @@
+.student-wrap {
+  max-width: 1040px; margin: 24px auto; padding: 0 12px;
+}
+.head {
+  display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:16px;
+  h1 { margin:0; }
+  .tabs { display:flex; gap:8px;
+    button { border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:8px 12px; cursor:pointer; }
+    .active { background:var(--primary); color:var(--primary-ink); font-weight:800; border-color:var(--primary); }
+  }
+}
+.empty { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px; text-align:center; color:var(--muted); box-shadow: var(--shadow); }
+
+.grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;
+  @media (max-width: 992px){ grid-template-columns:1fr; }
+}
+.card { background:var(--surface); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; }
+.cover { background:var(--elevated); color:#fff; padding:22px; cursor:pointer; min-height:84px; display:flex; align-items:flex-end; }
+.body { padding:14px; display:flex; gap:10px; flex-direction:column; }
+.title { font-weight:800; }
+.desc { color:var(--muted); min-height:38px; }
+.meta { display:flex; gap:6px; .tag{ background:var(--chip); border:1px solid var(--border); border-radius:999px; padding:2px 8px; font-size:12px; } }
+
+.progress { display:flex; align-items:center; gap:8px;
+  .bar { flex:1; height:8px; background:var(--border); border-radius:999px; overflow:hidden;
+    .fill { height:100%; background:var(--success); }
+  }
+  small{ color:#334155; }
+}
+
+.actions { display:flex; gap:8px; margin-top:4px; }
+.btn { background:var(--elevated); color:#e5e7eb; border:none; border-radius:10px; padding:8px 12px; cursor:pointer;
+  &.outline { background:transparent; border:1px solid var(--elevated); color:var(--elevated); }
+  &.primary { background:var(--primary); color:var(--primary-ink); font-weight:800; }
+  &.ghost { background:transparent; color:var(--ink); border:1px solid var(--border); }
+}
+
+.dash-hero{
+  margin: 8px 0 18px; padding: 16px 18px; border-radius: 14px;
+  background: linear-gradient(90deg, var(--glass), transparent);
+  border: 1px solid var(--border);
+}
+.dash-hero h2{ margin:0; font-size: 22px; }
+.dash-hero .muted{ color: var(--ink-muted); }

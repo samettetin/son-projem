@@ -1,0 +1,27 @@
+<div class="auth-card">
+  <h2>Kayıt Ol</h2>
+
+  <form (ngSubmit)="onRegister()" #f="ngForm">
+    <label>Ad Soyad</label>
+    <input name="fullName" [(ngModel)]="fullName" required />
+
+    <label>E-posta</label>
+    <input type="email" name="email" [(ngModel)]="email" required />
+
+    <label>Şifre</label>
+    <input type="password" name="password" [(ngModel)]="password" required />
+
+    <label>Rol</label>
+    <select name="role" [(ngModel)]="role" required>
+      <option *ngFor="let r of roles" [value]="r.value">
+        {{ r.label }}
+      </option>
+    </select>
+
+    <button class="btn primary" [disabled]="f.invalid">Kayıt Ol</button>
+
+    <p class="hint">Öğrenci dışındaki roller admin onayıyla aktifleşir.</p>
+    <p class="ok" *ngIf="ok">{{ msg }}</p>
+    <p class="err" *ngIf="!ok && msg">{{ msg }}</p>
+  </form>
+</div>

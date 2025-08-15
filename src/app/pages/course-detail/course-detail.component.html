@@ -1,0 +1,204 @@
+<section *ngIf="course; else notfound" class="course-detail">
+  <header>
+    <h1>{{ course.title }}</h1>
+    <div class="chips">
+      <span class="chip">{{ course.level === 'beginner' ? 'Başlangıç' : course.level === 'intermediate' ? 'Orta' : 'İleri' }}</span>
+      <span class="chip">{{ course.estimatedHours }} saat</span>
+      <span *ngFor="let t of course.tags" class="chip ghost">{{ t }}</span>
+      <span class="chip" *ngIf="course.certificateType">{{ course.certificateType | titlecase }} Sertifikalı</span>
+      <span class="chip difficulty" *ngIf="course.difficulty">Zorluk: {{ course.difficulty }}/10</span>
+      <span class="chip points" *ngIf="course.maxPoints">{{ course.maxPoints }} Puan</span>
+    </div>
+    <p class="desc">{{ course.description }}</p>
+    
+    <!-- Ön koşul kontrolü -->
+    <div class="prerequisites" *ngIf="course.prerequisites && course.prerequisites.length > 0">
+      <h4>📋 Ön Koşullar</h4>
+      <div class="prereq-list">
+        <div *ngFor="let prereqId of course.prerequisites" class="prereq-item">
+          <span class="status" [ngClass]="isPrerequisiteCompleted(prereqId) ? 'completed' : 'pending'">
+            {{ isPrerequisiteCompleted(prereqId) ? '✅' : '⏳' }}
+          </span>
+          <span class="title">{{ getPrerequisiteTitle(prereqId) }}</span>
+        </div>
+      </div>
+      <div class="prereq-warning" *ngIf="!canEnrollDueToPrerequisites">
+        ⚠️ Bu kursa kaydolmak için ön koşul kursları tamamlamanız gerekiyor.
+      </div>
+    </div>
+
+    <div class="actions" *ngIf="currentUser?.role === 'student'">
+      <button class="btn primary" (click)="enrollOrContinue()" [disabled]="!canEnrollDueToPrerequisites">
+        {{ isEnrolled ? 'Kursa Devam Et' : 'Kursa Kaydol' }}
+      </button>
+      <button class="btn outline" *ngIf="isEnrolled && enrollment?.progress === 100" (click)="viewCertificate()">Sertifikayı Görüntüle</button>
+      <button class="btn ghost" (click)="showDependencyFlow()">Bağımlılık Şeması</button>
+    </div>
+  </header>
+
+  <!-- Bağımlılık Görsel Akış Şeması -->
+  <section class="dependency-flow" *ngIf="showDependencyChart">
+    <h3>🔄 Kurs Bağımlılık Şeması</h3>
+    <div class="flow-container">
+      <svg class="flow-svg" [attr.width]="flowWidth" [attr.height]="flowHeight">
+        <!-- Bağlantılar -->
+        <g class="connections">
+          <path *ngFor="let conn of dependencyFlow.connections" 
+                [attr.d]="createConnectionPath(conn.from, conn.to)"
+                class="connection-line"
+                [ngClass]="conn.type">
+          </path>
+        </g>
+        
+        <!-- Düğümler -->
+        <g class="nodes">
+          <g *ngFor="let node of dependencyFlow.nodes" 
+             [attr.transform]="'translate(' + node.position.x + ',' + node.position.y + ')'"
+             class="node"
+             [ngClass]="getNodeClasses(node)">
+            
+            <!-- Düğüm arka planı -->
+            <rect class="node-bg" width="160" height="80" rx="8" x="-80" y="-40"></rect>
+            
+            <!-- Düğüm içeriği -->
+            <text class="node-title" x="0" y="-15" text-anchor="middle">{{ node.title }}</text>
+            <text class="node-level" x="0" y="5" text-anchor="middle">{{ node.level | titlecase }}</text>
+            <text class="node-status" x="0" y="25" text-anchor="middle">
+              {{ node.completed ? '✅ Tamamlandı' : node.canAccess ? '🟢 Erişilebilir' : '🔴 Kilitli' }}
+            </text>
+          </g>
+        </g>
+      </svg>
+    </div>
+    
+    <div class="flow-legend">
+      <div class="legend-item">
+        <span class="legend-color completed"></span>
+        <span>Tamamlanan Kurs</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color accessible"></span>
+        <span>Erişilebilir Kurs</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color locked"></span>
+        <span>Kilitli Kurs</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="mods">
+    <h3>📚 Müfredat</h3>
+    <div class="module-list">
+      <div class="module-item" *ngFor="let m of course.modules; let modIndex = index">
+        <div class="module-header">
+          <h4>{{ m.name }} <span *ngIf="m.required" class="req">(Zorunlu)</span></h4>
+          <div class="module-meta">
+            <small *ngIf="m.minProgress">Min. İlerleme: %{{ m.minProgress }}</small>
+            <small *ngIf="m.passScore">Min. Not: {{ m.passScore }}</small>
+            <small *ngIf="m.order">Sıra: {{ m.order }}</small>
+          </div>
+        </div>
+        
+        <ul class="activity-list" *ngIf="m.activities?.length">
+          <li *ngFor="let a of m.activities; let actIndex = index" class="activity-item">
+            <div class="activity-header">
+              <span class="activity-title">{{ a.title }} ({{ a.type | titlecase }})</span>
+              <div class="activity-meta">
+                <span class="activity-duration" *ngIf="a.durationMinutes">{{ a.durationMinutes }} dk</span>
+                <span class="activity-points" *ngIf="a.points">{{ a.points }} puan</span>
+                <span class="activity-required" *ngIf="a.required">Zorunlu</span>
+              </div>
+            </div>
+            
+            <!-- Alt aktiviteler -->
+            <ul class="sub-activity-list" *ngIf="a.subActivities && a.subActivities.length > 0">
+              <li *ngFor="let sub of a.subActivities" class="sub-activity">
+                <span class="sub-title">{{ sub.title }}</span>
+                <span class="sub-duration" *ngIf="sub.durationMinutes">{{ sub.durationMinutes }} dk</span>
+                <span class="sub-points" *ngIf="sub.points">{{ sub.points }} puan</span>
+              </li>
+            </ul>
+            
+            
+              <div class="activity-actions">
+                <!-- Ders/Görev içeriğine git -->
+                <ng-container [ngSwitch]="a.type">
+                  <button *ngSwitchCase="'lesson'" class="btn btn-sm" [routerLink]="['/lesson', course.id, a.id]"
+                          [disabled]="isEnrolled && !isUnlocked(a.id)">
+                    Derse Git
+                  </button>
+                  <button *ngSwitchCase="'task'" class="btn btn-sm" [routerLink]="['/lesson', course.id, a.id]"
+                          [disabled]="isEnrolled && !isUnlocked(a.id)">
+                    Görevi Aç
+                  </button>
+                  <button *ngSwitchCase="'quiz'" class="btn btn-sm" 
+                          (click)="completeActivity(a.id, a.durationMinutes, a.questions)"
+                          [disabled]="isEnrolled && !isUnlocked(a.id)">
+                    Quiz'e Gir
+                  </button>
+                  <button *ngSwitchDefault class="btn btn-sm" [routerLink]="['/lesson', course.id, a.id]">
+                    İçeriğe Git
+                  </button>
+                </ng-container>
+                <span class="completed-badge" *ngIf="isEnrolled && getEnrollmentActivity(a.id)?.completed">
+                  ✅ Tamamlandı 
+                  <small *ngIf="getEnrollmentActivity(a.id)?.score">({{ getEnrollmentActivity(a.id)?.score }} Puan)</small>
+                </span>
+              </div>
+    
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Öğrenme Yolu ve Tahminler -->
+  <section class="learning-path" *ngIf="currentUser">
+    <h3>🗺️ Öğrenme Yolu</h3>
+    <div class="path-info">
+      <div class="path-item">
+        <span class="label">Tahmini Tamamlama:</span>
+        <span class="value">{{ estimatedCompletion.estimatedWeeks }} hafta</span>
+      </div>
+      <div class="path-item">
+        <span class="label">Toplam Süre:</span>
+        <span class="value">{{ estimatedCompletion.totalHours }} saat</span>
+      </div>
+      <div class="path-item">
+        <span class="label">Kalan Süre:</span>
+        <span class="value">{{ estimatedCompletion.remainingHours }} saat</span>
+      </div>
+      <div class="path-item">
+        <span class="label">Durum:</span>
+        <span class="value" [ngClass]="estimatedCompletion.canStart ? 'can-start' : 'cannot-start'">
+          {{ estimatedCompletion.canStart ? 'Başlayabilir' : 'Ön koşul gerekli' }}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="live-activity-panel">
+    <h3>📡 Canlı Aktivite</h3>
+    <p class="active-users">Şu anda bu derste <strong>{{ activeUsersCount }}</strong> kişi aktif.</p>
+    <div class="activity-feed">
+      <div *ngFor="let activity of activityFeed | async" class="feed-item">
+        <small>{{ activity.timestamp | date:'shortTime' }}</small> - {{ activity.message }}
+      </div>
+    </div>
+  </section>
+</section>
+
+<ng-template #notfound>
+  <div class="empty">Kurs bulunamadı.</div>
+</ng-template>
+
+
+<div class="se-card" style="margin-top:12px">
+  <h3>Sertifika Şablonu</h3>
+  <select [(ngModel)]="certTpl" (change)="saveTpl()">
+    <option value="elegant">Elegant (Altın Kenar)</option>
+    <option value="classic">Classic</option>
+    <option value="minimal">Minimal</option>
+  </select>
+</div>

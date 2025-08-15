@@ -1,0 +1,61 @@
+.seba-sidebar {
+  background: #0f172a;
+  color: #e2e8f0;
+  width: 260px;
+  min-height: calc(100vh - 56px); // navbar'ı düş
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 56px; // navbar yüksekliği
+  border-right: 1px solid rgba(255,255,255,.06);
+
+  .logo {
+    font-weight: 900;
+    letter-spacing: .5px;
+    color: #fff;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: #cbd5e1;
+      transition: .2s ease;
+
+      &:hover {
+        background: #111827;
+        color: #fff;
+      }
+      &.active {
+        background: #111827;
+        color: #fff;
+        outline: 1px solid rgba(255,255,255,.06);
+      }
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .seba-sidebar {
+    width: 100%;
+    min-height: auto;
+    position: static;
+    top: 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    border-radius: 0 0 12px 12px;
+
+    .menu {
+      flex-direction: row;
+      flex-wrap: wrap;
+      a { border-radius: 8px; }
+    }
+  }
+}

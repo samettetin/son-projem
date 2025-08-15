@@ -1,0 +1,64 @@
+
+<div class="filter-saver se-card" style="margin-bottom:10px">
+  <input #fname placeholder="Filtre adı (örn: favoriler)" />
+  <button class="btn-primary" (click)="saveCurrentFilter(fname.value)">Kaydet</button>
+  <button (click)="loadFilter(fname.value)">Yükle</button>
+</div>
+
+<section class="courses-hero">
+  <h1>SEBA Kurs Kütüphanesi</h1>
+  <p>EBA + Udemy deneyimini tek yerde birleştiren premium katalog.</p>
+
+  <div class="filters">
+    <input placeholder="Kurs ara..." [(ngModel)]="q" (input)="apply()" />
+    <select [(ngModel)]="level" (change)="apply()">
+      <option value="">Seviye (Hepsi)</option>
+      <option value="beginner">Başlangıç</option>
+      <option value="intermediate">Orta</option>
+      <option value="advanced">İleri</option>
+    </select>
+    <button class="btn" (click)="saveView()">Görünümü Kaydet</button>
+    <button class="btn" (click)="resetFilters()">Sıfırla</button>
+  </div>
+</section>
+
+<section class="course-grid" *ngIf="filtered.length; else nores">
+  <article class="course-card" *ngFor="let c of filtered" (contextmenu)="onContextMenu($event, c)">
+    <div class="badge" [ngClass]="c.level">
+      {{ c.level === 'beginner' ? 'Başlangıç' : c.level === 'intermediate' ? 'Orta' : 'İleri' }}
+    </div>
+    <h3>{{ c.title }}</h3>
+    <p class="desc">{{ c.description }}</p>
+
+    <div class="meta">
+      <span>{{ c.estimatedHours }} saat</span>
+      <span *ngFor="let t of c.tags" class="tag">{{ t }}</span>
+    </div>
+
+    <a [routerLink]="['/course', c.id]" class="btn primary">Detay</a>
+  </article>
+</section>
+
+<ng-template #nores>
+  <div class="empty">
+    Kriterlere uygun kurs bulunamadı.
+  </div>
+</ng-template>
+
+<section class="saved-views">
+  <h3>Kaydedilmiş Görünümler</h3>
+  <div class="row" *ngFor="let v of views; trackBy: trackById">
+    <span>{{ v.title }}</span>
+    <div class="actions">
+      <button (click)="applyView(v.id)">Uygula</button>
+      <button (click)="removeView(v.id)">Sil</button>
+    </div>
+  </div>
+  <div class="muted" *ngIf="!views.length">Henüz görünüm yok.</div>
+</section>
+
+<div class="context-menu" [class.show]="menuVisible" [style.left.px]="menuX" [style.top.px]="menuY">
+  <button (click)="ctxAddFav()">⭐ Favorilere Ekle</button>
+  <button (click)="ctxReset()">↺ İlerlemeyi Sıfırla</button>
+  <button (click)="ctxAsk()">❓ Eğitmene Soru Sor</button>
+</div>

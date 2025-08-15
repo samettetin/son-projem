@@ -1,0 +1,51 @@
+<!-- ADMIN GÖRÜNÜMÜ -->
+<section *ngIf="isAdmin; else publicHero" class="hero admin">
+  <div class="container">
+    <div class="panel">
+      <h1>Merhaba, {{ user?.fullName }}</h1>
+      <p class="muted">Yönetim işlemlerine buradan devam edebilirsiniz.</p>
+      <div class="actions">
+        <a class="btn primary" routerLink="/dashboard-admin">Yönetim Paneli</a>
+        <a class="btn ghost" routerLink="/admin-approval">Üye Onayları</a>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+<!-- KAMU / ÖĞRENCİ GÖRÜNÜMÜ -->
+<ng-template #publicHero>
+  <section class="hero"><div class="hero-bg"></div>
+    <div class="container">
+      <h1 class="title">SEBA — Kurumsal E‑Öğrenme</h1>
+      <p class="subtitle">EBA'nın düzeni, Udemy'nin zenginliği ile premium bir katalog.</p>
+      <div class="actions" *ngIf="!user; else loggedCtas">
+        <a class="btn primary" routerLink="/courses">Kurs Kütüphanesi</a>
+        <a class="btn ghost" routerLink="/register">Hemen Başla</a>
+      </div>
+      <ng-template #loggedCtas>
+        <div class="actions">
+          <a class="btn primary" [routerLink]="user?.role==='student' ? '/dashboard-student' : '/dashboard-admin'">Panelime Git</a>
+          <a class="btn ghost" routerLink="/courses">Kursları Gör</a>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+  
+  <section class="container" style="margin:18px auto">
+    <div class="grid cols-3 resp-1">
+      <div class="card" style="padding:16px">
+        <h3>Öğrenme Yolları</h3>
+        <p class="muted">Girişten ileri seviyeye modüler öğrenme patikaları.</p>
+      </div>
+      <div class="card" style="padding:16px">
+        <h3>Gerçek Zaman Simülasyon</h3>
+        <p class="muted">Aktif katılım sayısı ve canlı akış ile motivasyon.</p>
+      </div>
+      <div class="card" style="padding:16px">
+        <h3>Raporlama ve Analitik</h3>
+        <p class="muted">Tamamlama oranları, süre ve quiz performansı.</p>
+      </div>
+    </div>
+  </section>
+</ng-template>

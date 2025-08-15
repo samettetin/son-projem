@@ -1,0 +1,23 @@
+.p{ padding: 18px; }
+.lesson h2{ margin: 0 0 10px; }
+.muted{ color: var(--muted); }
+.progress{ height:8px; background: rgba(255,255,255,.1); border-radius: 8px; overflow:hidden; margin: 8px 0 4px; }
+.progress .bar{ height:100%; background: var(--primary); width:0; transition: width .3s ease; }
+.options{ list-style:none; padding:0; margin: 8px 0 12px; display:grid; gap:8px; }
+.option{ display:flex; gap:8px; align-items:center; padding:8px 10px; border:1px solid rgba(255,255,255,.12); border-radius:10px; }
+.actions{ margin-top:12px; }
+
+.app-task{ margin: 12px 0 20px; }
+.app-task textarea{
+  width: 100%; border-radius: 12px; padding: 10px 12px;
+  background: var(--card); color: var(--ink);
+  border: 1px solid var(--border);
+  outline: none;
+}
+.app-task .ack{ display:flex; align-items:center; gap:10px; margin: 10px 0; color: var(--ink-muted); }
+.btn-primary{
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  color: #fff; border:0; border-radius: 12px; padding:10px 14px; font-weight:700;
+  box-shadow: 0 12px 28px rgba(0,0,0,.25);
+}
+.btn-primary:disabled{ opacity: .4; filter: grayscale(.3); }

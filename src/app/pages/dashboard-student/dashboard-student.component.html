@@ -1,0 +1,82 @@
+<div class="dash-hero">
+  <h2>Öğrenci Paneli</h2>
+  <div class="muted">Rolünüz: <strong>{{ (auth.getCurrentUser()?.role || 'guest')  }}</strong></div>
+</div>
+<div class="student-wrap">
+  <header class="head">
+    <div>
+      <h1>Merhaba, {{ me.fullName }}</h1>
+      <p>Bugün ne öğrenmek istersin?</p>
+    </div>
+
+    <div class="tabs">
+      <button (click)="activeTab='mine'" [class.active]="activeTab==='mine'">Kurslarım</button>
+      <button (click)="activeTab='rec'"  [class.active]="activeTab==='rec'">Önerilenler</button>
+    </div>
+  </header>
+
+  <!-- Kurslarım -->
+  <section *ngIf="activeTab==='mine'">
+    <div *ngIf="!myEnrollments.length" class="empty">
+      Henüz bir kursa kayıtlı değilsin. Aşağıdaki önerilerden başlayabilirsin.
+      <button class="btn ghost" (click)="activeTab='rec'">Önerileri Göster</button>
+    </div>
+
+    <div class="grid" *ngIf="myEnrollments.length">
+      <div class="card" *ngFor="let e of myEnrollments; trackBy: trackById">
+        <div class="cover" (click)="openCourse(e.courseId)">
+          <span>{{ e.course?.title }}</span>
+        </div>
+        <div class="body">
+          <div class="title">{{ e.course?.title }}</div>
+          <div class="desc">{{ e.course?.description }}</div>
+
+          <div class="meta">
+            <span class="tag">{{ e.course?.level | titlecase }}</span>
+            <span class="tag">{{ e.course?.estimatedHours }}s</span>
+          </div>
+
+          <div class="progress">
+            <div class="bar"><div class="fill" [style.width.%]="e.progress"></div></div>
+            <small>{{ e.progress }}%</small>
+          </div>
+
+          <div class="actions">
+            <button class="btn" (click)="continueCourse(e.id)">Devam Et</button>
+            <button class="btn outline" (click)="openCourse(e.courseId)">Detay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Önerilenler -->
+  <section *ngIf="activeTab==='rec'">
+    <div *ngIf="!recommended.length" class="empty">Şimdilik önerecek yeni kurs yok.</div>
+
+    <div class="grid">
+      <div class="card" *ngFor="let c of recommended; trackBy: trackById">
+        <div class="cover" (click)="openCourse(c.id)">
+          <span>{{ c.title }}</span>
+        </div>
+        <div class="body">
+          <div class="title">{{ c.title }}</div>
+          <div class="desc">{{ c.description }}</div>
+          <div class="meta">
+            <span class="tag">{{ c.level | titlecase }}</span>
+            <span class="tag">{{ c.estimatedHours }}s</span>
+          </div>
+          <div class="actions">
+            <button class="btn primary" (click)="enroll(c.id)">Kursa Kaydol</button>
+            <button class="btn outline" (click)="openCourse(c.id)">Detay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="certs">
+    <h2>Sertifikalar</h2>
+    <div class="muted">Kursu %100 tamamlayınca otomatik sertifika üretilebilir (simülasyon).</div>
+  </section>
+</div>

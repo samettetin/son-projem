@@ -1,0 +1,49 @@
+<div class="admin-approval-wrapper">
+  <h2>Üst Kademe Üye Onay Paneli</h2>
+
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab==='pending'" (click)="activeTab='pending'">
+      Bekleyenler ({{ pendingUsers.length }})
+    </button>
+    <button class="tab" [class.active]="activeTab==='rejected'" (click)="activeTab='rejected'">
+      Reddedilenler ({{ rejectedUsers.length }})
+    </button>
+  </div>
+
+  <!-- Bekleyenler -->
+  <ng-container *ngIf="activeTab==='pending'">
+    <div *ngIf="pendingUsers.length===0" class="no-pending">Onay bekleyen kullanıcı yok.</div>
+
+    <div class="user-card" *ngFor="let u of pendingUsers; trackBy: trackById">
+      <div class="user-info">
+        <h3>{{ u.fullName }}</h3>
+        <p><strong>E-posta:</strong> {{ u.email }}</p>
+        <p><strong>Rol:</strong>
+          <span class="role-badge" [ngClass]="u.role">{{ getRoleLabel(u.role) }}</span>
+        </p>
+      </div>
+      <div class="actions">
+        <button class="approve-btn" (click)="approve(u.id)">Onayla</button>
+        <button class="reject-btn"  (click)="reject(u.id)">Reddet</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Reddedilenler -->
+  <ng-container *ngIf="activeTab==='rejected'">
+    <div *ngIf="rejectedUsers.length===0" class="no-pending">Reddedilmiş kullanıcı yok.</div>
+
+    <div class="user-card rejected" *ngFor="let u of rejectedUsers; trackBy: trackById">
+      <div class="user-info">
+        <h3>{{ u.fullName }}</h3>
+        <p><strong>E-posta:</strong> {{ u.email }}</p>
+        <p><strong>Rol:</strong>
+          <span class="role-badge" [ngClass]="u.role">{{ getRoleLabel(u.role) }}</span>
+        </p>
+      </div>
+      <div class="actions">
+        <button class="undo-btn" (click)="undoReject(u.id)">Geri Al</button>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,18 @@
+
+<section class="hero">
+  <div class="container">
+    <h1 class="title">Raporlar</h1>
+    <p class="subtitle">Canlı kullanıcılar ve son aktiviteler</p>
+  </div>
+</section>
+<div class="container stack" style="margin-top:16px">
+  <div class="grid cols-3">
+    <div class="card"><h3>Aktif Kullanıcı</h3><div class="title">{{ active }}</div></div>
+    <div class="card"><h3>Tamamlama Oranı</h3><p class="muted">Grafikler için Chart.js hazır (paket eklendi).</p></div>
+    <div class="card"><h3>Departman Dağılımı</h3><p class="muted">Pasta grafik placeholder.</p></div>
+  </div>
+  <div class="card">
+    <h3>Aktivite Akışı</h3>
+    <div *ngFor="let e of feed" class="row"><span class="pill">{{ e.at | date:'short' }}</span> <span>{{ e.text }}</span></div>
+  </div>
+</div>

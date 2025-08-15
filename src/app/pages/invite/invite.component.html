@@ -1,0 +1,12 @@
+
+<section class="hero"><div class="container"><h1 class="title">Davet Oluştur</h1></div></section>
+<div class="container stack" style="margin-top:16px">
+  <div class="card row">
+    <input placeholder="E-posta" [(ngModel)]="email">
+    <select [(ngModel)]="courseId">
+      <option [value]="c.id" *ngFor="let c of courses">{{ c.name }}</option>
+    </select>
+    <button class="btn" (click)="create()">Davet Oluştur</button>
+    <span class="pill" *ngIf="code">Kod: {{ code }}</span>
+  </div>
+</div>

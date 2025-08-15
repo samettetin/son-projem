@@ -1,0 +1,26 @@
+
+<section class="hero">
+  <div class="container">
+    <h1 class="title">Learning Path</h1>
+    <p class="subtitle">Kurs: {{ courseId }}</p>
+  </div>
+</section>
+<div class="container stack" style="margin-top:16px">
+  <div class="card">
+    <div class="row">
+      <input placeholder="Yeni modül adı" [(ngModel)]="newModuleTitle">
+      <button class="btn" (click)="addModule()">Modül Ekle</button>
+    </div>
+  </div>
+  <div class="grid cols-2">
+    <div class="card" *ngFor="let m of lp?.modules; let i=index">
+      <div class="row">
+        <div class="badge">{{ m.id }}</div>
+        <input [(ngModel)]="m.title">
+        <label class="row"><input type="checkbox" [(ngModel)]="m.required"> Zorunlu</label>
+        <button class="btn ghost" (click)="moveUp(i)">Yukarı</button>
+        <button class="btn ghost" (click)="moveDown(i)">Aşağı</button>
+      </div>
+    </div>
+  </div>
+</div>

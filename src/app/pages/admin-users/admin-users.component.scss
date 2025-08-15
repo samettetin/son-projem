@@ -1,0 +1,11 @@
+.container { max-width: 980px; margin: 16px auto; }
+.muted { color: #6b7280; }
+.filters { display: flex; gap: 8px; margin: 8px 0 16px; }
+.list { display: grid; gap: 8px; }
+.item { padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff; }
+.row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.name { font-weight: 600; }
+.sub { color: #6b7280; font-size: 12px; }
+.idcol .id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.btn { padding: 6px 10px; border-radius: 8px; border: 1px solid #0f172a; cursor: pointer; }
+.btn.ghost { background: transparent; }

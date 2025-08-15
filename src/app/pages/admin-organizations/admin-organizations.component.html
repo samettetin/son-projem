@@ -1,0 +1,96 @@
+<div class="org-wrapper">
+  <h2>Organizasyonlar</h2>
+
+  <!-- Davet Paneli -->
+  <div class="panel">
+    <h3>Davet Kodu Oluştur</h3>
+    <p class="muted">
+      E-posta: davet edeceğiniz kişinin adresi. Kurs/Org girerseniz kabul edince otomatik
+      <b>kursa kaydeder</b> ve/veya <b>org atar</b>.
+    </p>
+
+    <div class="org-form invite-grid">
+      <input [(ngModel)]="invEmail" placeholder="E-posta (ornek@firma.com)" />
+      <input [(ngModel)]="invCourseId" placeholder="Kurs ID (opsiyonel) — #id kurs kartlarında yazar" />
+      <input [(ngModel)]="invOrgId" placeholder="Org ID (opsiyonel)" />
+      <button class="btn primary" (click)="generateInvite()" [disabled]="creatingInvite">Oluştur</button>
+    </div>
+
+    <div class="hints">
+      <span class="pill ok" *ngIf="willEnroll()">✔ Bu davet <b>kursa kaydeder</b>.</span>
+      <span class="pill ok" *ngIf="willAssignOrg()">✔ Bu davet <b>org atar</b>.</span>
+      <span class="pill" *ngIf="!willEnroll() && !willAssignOrg()">Bu davet sadece kayıt/doğrulama içindir.</span>
+    </div>
+
+    <!-- Sonuç -->
+    <div class="result" *ngIf="last">
+      <div class="row">
+        <div>
+          <div class="muted">Kod</div>
+          <div class="mono">{{ last.code }}</div>
+        </div>
+        <button class="btn" (click)="copy(last.code)">Kodu Kopyala</button>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="muted">Join Link</div>
+          <div class="mono">{{ joinUrl }}</div>
+        </div>
+        <button class="btn" (click)="copy(joinUrl)">Linki Kopyala</button>
+      </div>
+
+      <div class="muted">
+        Alıcıya iletin: <code>{{ joinUrl }}</code> — kullanıcı giriş yaptıktan sonra açarsa işlem tamamlanır.
+      </div>
+    </div>
+
+    <div class="msg" *ngIf="msg">{{ msg }}</div>
+
+    <h4 class="subhead">Son Davetler</h4>
+    <div class="invite-list" *ngIf="invites?.length; else noInv">
+      <div class="invite-item" *ngFor="let i of invites">
+        <div class="left">
+          <b>{{ i.email }}</b>
+          <div class="muted">Kod: <span class="mono">{{ i.code }}</span></div>
+          <div class="muted">
+            <span *ngIf="i.courseId">Kurs: <span class="mono">{{ i.courseId }}</span></span>
+            <span *ngIf="i.orgId" style="margin-left:8px">Org: <span class="mono">{{ i.orgId }}</span></span>
+          </div>
+        </div>
+        <button class="btn ghost" (click)="copy(location.origin + '/join/' + i.code)">Link</button>
+      </div>
+    </div>
+    <ng-template #noInv><div class="empty">Henüz davet yok.</div></ng-template>
+  </div>
+
+  <!-- Organizasyon Ekle -->
+  <div class="panel" style="margin-top:16px">
+    <h3>Organizasyon Ekle</h3>
+    <div class="org-form">
+      <input placeholder="Organizasyon adı" [(ngModel)]="name" (keyup.enter)="add()" />
+      <input placeholder="Açıklama (opsiyonel)" [(ngModel)]="description" (keyup.enter)="add()" />
+      <button class="btn primary" (click)="add()">Ekle</button>
+    </div>
+  </div>
+
+  <!-- CSV ile toplu kullanıcı içe aktar -->
+  <div class="panel" style="margin-top:16px">
+    <h3>CSV ile Toplu Kayıt</h3>
+    <div class="muted">Sütunlar: fullName,email,password,role,orgId,department</div>
+    <input type="file" accept=".csv" (change)="onCsv($event)" />
+  </div>
+
+  <!-- Organizasyon listesi -->
+  <div *ngIf="!orgs.length" class="empty">Henüz organizasyon yok.</div>
+  <div class="org-list" *ngIf="orgs.length">
+    <div class="org-item" *ngFor="let o of orgs; trackBy: trackById">
+      <div class="org-info">
+        <div class="name">{{ o.name }}</div>
+        <div class="desc" *ngIf="o.description">{{ o.description }}</div>
+        <small class="muted">Oluşturma: {{ o.createdAt | date: 'short' }}</small>
+      </div>
+      <button class="btn danger" (click)="delete(o.id)">Sil</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+.auth-card{max-width:420px;margin:48px auto;background:#fff;padding:28px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.auth-card form{display:grid;gap:10px}
+.auth-card input, .auth-card select{padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0}
+.btn.primary{background:#0f172a;color:#fff;border:none;border-radius:10px;cursor:pointer}
+.err{color:#ef4444;margin-top:6px}
+
+.login-wrap{ min-height: calc(100vh - 60px); display:grid; place-items:center; padding: 24px; }
+.login-card{ width:100%; max-width: 440px; }
+.login-card .btn-primary{ width:100%; padding: 14px 16px; font-size: 16px; }
+.login-card .actions{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+
+
+.login-wrap{ min-height: calc(100vh - 60px); display:grid; place-items:center; position:relative; overflow:hidden; }
+.login-card{ width:100%; max-width: 460px; padding: 20px; }
+.login-card h2{ margin: 6px 0 10px; }
+.login-card input{ width:100%; }
+.btn-ghost.sm{ padding:6px 8px; border:1px solid var(--border); border-radius:10px; background:transparent; color:var(--ink); }
+
+/* Premium blurred blobs */
+.bg-blobs{
+  position:absolute; inset:-20% -10% auto -10%; height:70%;
+  background:
+    radial-gradient(40% 40% at 20% 30%, color-mix(in oklab, var(--primary), #fff 10%), transparent 60%),
+    radial-gradient(35% 35% at 80% 20%, color-mix(in oklab, var(--accent), #fff 15%), transparent 65%),
+    radial-gradient(30% 30% at 50% 85%, color-mix(in oklab, var(--primary), #000 10%), transparent 65%);
+  filter: blur(40px) saturate(140%);
+  opacity:.35; pointer-events:none;
+}

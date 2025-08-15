@@ -1,0 +1,33 @@
+<aside class="seba-sidebar">
+  <div class="logo">SEBA</div>
+
+  <nav class="menu">
+    <!-- Ortak -->
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <span>Ana Sayfa</span>
+    </a>
+    <a routerLink="/courses" routerLinkActive="active">
+      <span>Kurslar</span>
+    </a>
+
+    <!-- Öğrenci -->
+    <ng-container *ngIf="currentUser?.role === 'student'">
+      <a routerLink="/dashboard-student" routerLinkActive="active">
+        <span>Öğrenci Paneli</span>
+      </a>
+    </ng-container>
+
+    <!-- Admin / Eğitmen / EM / Observer -->
+    <ng-container *ngIf="isAdminLike">
+      <a routerLink="/dashboard-admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <span>Genel Bakış</span>
+      </a>
+      <a routerLink="/admin-approval" routerLinkActive="active">
+        <span>Üye Onayları</span>
+      </a>
+      <!-- İleride: Organizasyonlar, İçerik Yönetimi vs.
+      <a routerLink="/organizations" routerLinkActive="active"><span>Organizasyonlar</span></a>
+      -->
+    </ng-container>
+  </nav>
+</aside>

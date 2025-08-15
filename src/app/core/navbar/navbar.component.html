@@ -1,0 +1,34 @@
+<nav class="seba-nav">
+  <div class="left">
+    <a class="brand" routerLink="/">SEBA</a>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Ana Sayfa</a>
+    <a routerLink="/courses" routerLinkActive="active">Kurslar</a>
+    <a *ngIf="currentUser && currentUser.role !== 'student'" routerLink="/dashboard-admin" routerLinkActive="active">Yönetim</a>
+    <a *ngIf="currentUser && currentUser.role === 'student'" routerLink="/dashboard-student" routerLinkActive="active">Panelim</a>
+    <a *ngIf="currentUser && currentUser.role === 'observer'" routerLink="/observer-analytics" routerLinkActive="active">Analitik</a>
+  </div>
+
+  <div class="right">
+    <div class="seg">
+      <button class="seg-btn" (click)="setTheme('light')">Açık</button>
+      <button class="seg-btn" (click)="setTheme('dark')">Koyu</button>
+      <button class="seg-btn" (click)="setTheme('focus')">Odak</button>
+    </div>
+
+    <ng-container *ngIf="!currentUser; else authed">
+      <a class="btn-ghost" routerLink="/login">Giriş Yap</a>
+      <a class="btn-primary" routerLink="/register">Kayıt Ol</a>
+    </ng-container>
+
+    <ng-template #authed>
+      <div class="userbox">
+        <div class="avatar">{{ (currentUser?.fullName||'?').slice(0,1) }}</div>
+        <div class="meta">
+          <div class="name">{{ currentUser?.fullName }}</div>
+          <div class="role">{{ getRoleLabel(currentUser!.role) }}</div>
+        </div>
+        <button class="btn-outline" (click)="confirmLogout()">Çıkış</button>
+      </div>
+    </ng-template>
+  </div>
+</nav>

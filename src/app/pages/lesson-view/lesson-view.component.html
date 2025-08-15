@@ -1,0 +1,66 @@
+
+<section class="app-task se-card" *ngIf="taskConfig">
+  <h3>{{ taskConfig.title }}</h3>
+  <p class="muted">{{ taskConfig.validatorHint }}</p>
+
+  <ng-container [ngSwitch]="taskConfig.type">
+    <div *ngSwitchCase="'code'">
+      <textarea [(ngModel)]="taskAnswer" (input)="validateTask()" rows="4" [placeholder]="taskConfig.placeholder"></textarea>
+    </div>
+    <div *ngSwitchCase="'mcq'">
+      <div class="mcq">
+        <label *ngFor="let opt of taskConfig.options; let i = index">
+          <input type="radio" name="mcq" [value]="i" [(ngModel)]="mcqChoice" (change)="validateTask()"> {{ opt }}
+        </label>
+      </div>
+    </div>
+  </ng-container>
+
+  <label class="ack"><input type="checkbox" [(ngModel)]="checkedRead" (change)="onAcknowledgeChange()"> Bu dersi okudum ve anladım.</label>
+  <button class="btn-primary" [disabled]="!canComplete || !checkedRead" (click)="markDone()">Dersi Tamamla</button>
+</section>
+
+
+<section class="app-task se-card">
+  <h3>Uygulama Görevi</h3>
+  <p class="muted">Kısa pratik: Aşağıdaki kutuya <code>console.log("SEBA")</code> yaz ve doğrula.</p>
+  <textarea [(ngModel)]="taskAnswer" (input)="validateTask()" rows="4" placeholder='ör. console.log("SEBA")'></textarea>
+  <label class="ack"><input type="checkbox" [(ngModel)]="checkedRead" (change)="onAcknowledgeChange()"> Bu dersi okudum ve anladım.</label>
+  <button class="btn-primary" [disabled]="!canComplete || !checkedRead" (click)="markDone()">Dersi Tamamla</button>
+</section>
+
+<main class="container lesson">
+  <a routerLink="../.." class="btn ghost">← Kursa Dön</a>
+  <section class="card p">
+    <h2>{{ node?.title }}</h2>
+    <p class="muted" *ngIf="!node?.body">Bu bölüm açıklaması hazırlanıyor.</p>
+    <div class="body" [innerHTML]="node?.body"></div>
+
+    <div class="gate" *ngIf="!node?.quiz?.length">
+      <div class="progress" *ngIf="!engaged">
+        <div class="bar" [style.width.%]="(15-remaining)/15*100"></div>
+      </div>
+      <small *ngIf="!engaged" class="muted">Tamamla butonu {{remaining}} sn sonra aktif olur.</small>
+    </div>
+
+    <div class="quiz" *ngIf="node?.quiz?.length">
+      <h3>Mini Quiz</h3>
+      <p>{{ node?.quiz![0].q }}</p>
+      <ul class="options">
+        <li *ngFor="let opt of node?.quiz![0].options; let i=index">
+          <label class="option">
+            <input type="radio" name="q" [value]="i" (change)="choose(i)" />
+            <span>{{ opt }}</span>
+          </label>
+        </li>
+      </ul>
+      <button class="btn primary" (click)="submitQuiz()" [disabled]="quizAnswer===null">Cevabı Gönder</button>
+      <div class="badge" *ngIf="quizPassed">✅ Doğru cevap! Tamamlayabilirsin.</div>
+      <div class="badge" *ngIf="quizAnswer!==null && !quizPassed">❌ Yanlış. Tekrar dene.</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" (click)="complete()" [disabled]="!canComplete">Bölümü Tamamla</button>
+    </div>
+  </section>
+</main>

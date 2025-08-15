@@ -1,0 +1,36 @@
+<div class="container">
+  <h2>Kullanıcı Dizini</h2>
+  <p class="muted">Onaylı kullanıcılar. ID görünür, kopyalanabilir; rol/arama filtresi ve CSV export var.</p>
+
+  <div class="filters">
+    <input [(ngModel)]="q" placeholder="Ara: ad, email, ID" />
+    <select [(ngModel)]="role">
+      <option value="">Tüm roller</option>
+      <option value="superadmin">Super Admin</option>
+      <option value="admin">Admin</option>
+      <option value="educationmanager">Education Manager</option>
+      <option value="instructor">Instructor</option>
+      <option value="observer">Observer</option>
+      <option value="student">Student</option>
+    </select>
+    <button class="btn" (click)="exportCsv()">CSV İndir</button>
+  </div>
+
+  <div class="list" *ngIf="users?.length; else empty">
+    <div class="item" *ngFor="let u of users; trackBy: trackById" [hidden]="!filter(u)">
+      <div class="row">
+        <div class="col">
+          <div class="name">{{u.fullName}} <small class="muted">({{u.role}})</small></div>
+          <div class="sub">{{u.email}}</div>
+          <div class="sub">Org: <strong>{{u.orgId || '-'}}</strong></div>
+        </div>
+        <div class="col idcol">
+          <small class="muted">ID</small>
+          <div class="id">{{u.id}}</div>
+          <button class="btn ghost" (click)="copyId(u)">Kopyala</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #empty><div class="muted">Kullanıcı bulunamadı.</div></ng-template>
+</div>

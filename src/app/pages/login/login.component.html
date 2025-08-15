@@ -1,0 +1,20 @@
+<div class="login-wrap">
+  <div class="bg-blobs"></div>
+  <div class="se-card login-card glass">
+    <h2>Giriş Yap</h2>
+
+    <form #f="ngForm" (ngSubmit)="onLogin()">
+      <label>E-posta</label>
+      <input name="email" [(ngModel)]="email" type="email" required autocomplete="username" />
+
+      <label>Şifre</label>
+      <div class="row" style="display:flex; gap:8px; align-items:center">
+        <input name="password" [(ngModel)]="password" [type]="show?'text':'password'" required autocomplete="current-password"/>
+        <button class="btn-ghost sm" type="button" (click)="show = !show">{{ show ? 'Gizle' : 'Göster' }}</button>
+      </div>
+
+      <button class="btn-primary" type="submit" [disabled]="f.invalid">Giriş</button>
+      <p class="hint muted">Admin/Eğitmen/EM/Gözlemci hesapları onay sonrası giriş yapar.</p>
+    </form>
+  </div>
+</div>

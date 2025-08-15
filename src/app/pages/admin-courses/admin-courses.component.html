@@ -1,0 +1,99 @@
+<div class="container">
+  <h2>Kurs Yönetimi</h2>
+  <div class="muted">Admin/Super Admin tüm kursları görür; diğer roller sadece kendi organizasyonunu görür.</div>
+
+  <div class="filters">
+    <input [(ngModel)]="q" placeholder="Ara: başlık, açıklama veya ID" (input)="load()" />
+    <select [(ngModel)]="orgFilter" (change)="load()">
+      <option value="">Tüm organizasyonlar</option>
+      <option *ngFor="let o of orgs()" [value]="o">{{o}}</option>
+    </select>
+  </div>
+
+  <div class="list" *ngIf="courses.length; else empty">
+    <div class="item" *ngFor="let c of courses; trackBy: trackById">
+      <div class="row top">
+        <div class="title">
+          <b>{{c.title}}</b>
+          <small class="muted">#{{c.id}}</small>
+        </div>
+        <div class="actions">
+          <button (click)="openInstructor(c)">Eğitmen Ata</button>
+          <button (click)="openOrg(c)">Org Ata</button>
+          <button (click)="togglePublish(c)">{{ c?.published ? 'Yayından Al' : 'Yayınla' }}</button>
+        </div>
+      </div>
+      <div class="row info">
+        <div><b>Org:</b> <span class="mono">{{c.orgId || '-'}}</span></div>
+        <div><b>Eğitmen:</b> {{ instructorName(c) }}</div>
+        <div><b>Öğrenci:</b> {{ studentCount(c) }}</div>
+        <div><b>Seviye:</b> {{c.level}}</div>
+        <div><b>Süre:</b> ~{{c.estimatedHours}} saat</div>
+      </div>
+      <div class="desc">{{c.description}}</div>
+    </div>
+  </div>
+
+  <ng-template #empty>
+    <div class="muted">Kurs bulunamadı.</div>
+  </ng-template>
+</div>
+
+<!-- ===== Overlay (modal açıkken) ===== -->
+<div class="overlay" *ngIf="showIns || showOrg" (click)="closeModals()"></div>
+
+<!-- ===== Eğitmen Ata Modal ===== -->
+<div class="modal" *ngIf="showIns">
+  <div class="dialog">
+    <div class="modal-head">
+      <div>Atama Hedefi: <span class="pill">Eğitmen</span> → Kurs: <b>{{targetCourse?.title}}</b> <small class="muted">#{{targetCourse?.id}}</small></div>
+      <button class="x" (click)="closeModals()" aria-label="Kapat">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="picker">
+        <input [(ngModel)]="insQ" placeholder="Eğitmen ara: ad veya email" />
+        <div class="picklist">
+          <label class="pick" *ngFor="let u of filteredInstructors()">
+            <input type="radio" name="ins" [value]="u.id" [(ngModel)]="selectedInsId"/>
+            <div class="avatar">{{u.fullName?.charAt(0) || 'E'}}</div>
+            <div class="meta">
+              <div class="name">{{u.fullName}}</div>
+              <div class="sub">{{u.email}}</div>
+            </div>
+            <span class="role">instructor</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="gap"></div>
+      <button class="actions button" [disabled]="!selectedInsId" (click)="confirmInstructor()">Ata</button>
+      <button class="actions button" (click)="closeModals()">İptal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Org Ata Modal ===== -->
+<div class="modal" *ngIf="showOrg">
+  <div class="dialog">
+    <div class="modal-head">
+      <div>Atama Hedefi: <span class="pill">Organizasyon</span> → Kurs: <b>{{targetCourse?.title}}</b> <small class="muted">#{{targetCourse?.id}}</small></div>
+      <button class="x" (click)="closeModals()" aria-label="Kapat">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="muted">Mevcut bir org ID seç veya yeni bir org ID yaz.</div>
+      <div style="margin:8px 0">
+        <input [(ngModel)]="orgInput" placeholder="Org ID" />
+      </div>
+      <div class="muted" *ngIf="orgSuggestions?.length">Öneriler:</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px" *ngIf="orgSuggestions?.length">
+        <span class="chip" *ngFor="let o of orgSuggestions" (click)="chooseOrg(o)">{{o}}</span>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="gap"></div>
+      <button class="actions button" (click)="confirmOrg()">Ata</button>
+      <button class="actions button" (click)="closeModals()">İptal</button>
+    </div>
+  </div>
+</div>

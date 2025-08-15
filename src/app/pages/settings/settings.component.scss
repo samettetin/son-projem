@@ -1,0 +1,5 @@
+.settings{
+  max-width:720px; margin:0 auto;
+  .row{ display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+  label{ width:160px; color: var(--ink-muted); }
+}

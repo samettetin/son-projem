@@ -1,0 +1,109 @@
+<div class="dash-hero">
+  <h2>Eğitmen Paneli</h2>
+  <div class="muted">Rolünüz: <strong>{{ (auth.getCurrentUser()?.role || 'guest')  }}</strong></div>
+</div>
+<div class="inst-layout">
+  <header class="inst-head">
+    <h1>Eğitmen Paneli</h1>
+    <p>Kurs oluştur, modülleri düzenle, öğrencilere aç.</p>
+  </header>
+
+  <section class="inst-card">
+    <h2>Yeni Kurs Oluştur</h2>
+
+    <div class="form-grid">
+      <label>Başlık</label>
+      <input [(ngModel)]="title" placeholder="Örn: TypeScript Uygulamalı" />
+
+      <label>Açıklama</label>
+      <textarea [(ngModel)]="description" rows="3" placeholder="Kurs hakkında kısa açıklama..."></textarea>
+
+      <label>Seviye</label>
+      <select [(ngModel)]="level">
+        <option value="beginner">Başlangıç</option>
+        <option value="intermediate">Orta</option>
+        <option value="advanced">İleri</option>
+      </select>
+
+      <label>Tahmini Süre (saat)</label>
+      <input type="number" min="1" [(ngModel)]="estimatedHours" />
+
+      <label>Etiketler (virgülle)</label>
+      <input [(ngModel)]="tagsCsv" placeholder="Teknik, Zorunlu, Sertifikalı" />
+
+      <label>Kapak Görseli (URL - opsiyonel)</label>
+      <input [(ngModel)]="cover" placeholder="https://..." />
+
+      <label>Organizasyon</label>
+      <select [(ngModel)]="orgId">
+        <option value="">Genel (orgsuz)</option>
+        <option *ngFor="let o of orgs" [value]="o.id">{{ o.name }}</option>
+      </select>
+
+      <label>Sertifika Türü</label>
+      <select [(ngModel)]="certType">
+        <option value="none">Yok</option>
+        <option value="completion">Tamamlama</option>
+        <option value="qr">QR Sertifika</option>
+      </select>
+
+      <label>Ön Koşullar (kurs id’leri, virgülle)</label>
+      <input [(ngModel)]="prereqCsv" placeholder="kurs-id-1, kurs-id-2" />
+    </div>
+
+    <div class="modules">
+      <div class="mod-head">
+        <h3>Modüller</h3>
+        <button class="btn outline" (click)="addModule()">Modül Ekle</button>
+      </div>
+
+      <div class="mod-list" cdkDropList (cdkDropListDropped)="drop($event)">
+        <div class="mod-item" *ngFor="let m of modules; let i = index" cdkDrag>
+          <input [(ngModel)]="m.name" />
+          <label class="chk">
+            <input type="checkbox" [(ngModel)]="m.required" />
+            Zorunlu
+          </label>
+          <input type="number" min="0" max="100" [(ngModel)]="m.minProgress" placeholder="Min %" />
+          <input type="number" min="0" max="100" [(ngModel)]="m.passScore" placeholder="Geçiş Notu" />
+          <button class="btn danger" (click)="removeModule(i)" *ngIf="modules.length>1">Sil</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" (click)="createCourse()" [disabled]="!title.trim()">Kursu Oluştur</button>
+    </div>
+  </section>
+
+  <section class="inst-card">
+    <h2>Kurslarım</h2>
+    <div class="empty" *ngIf="!myCourses.length">Henüz kurs oluşturmadınız.</div>
+
+    <div class="course-grid" *ngIf="myCourses.length">
+      <a class="course" *ngFor="let c of myCourses; trackBy: trackById" [routerLink]="['/course', c.id]">
+        <div class="cover" *ngIf="c.cover" [style.backgroundImage]="'url('+c.cover+')'"></div>
+        <div class="body">
+          <h3>{{ c.title }}</h3>
+          <p class="desc">{{ c.description }}</p>
+          <div class="meta">
+            <span class="pill lvl">{{ c.level | titlecase }}</span>
+            <span class="pill time">{{ c.estimatedHours }}s</span>
+            <span class="pill tag" *ngFor="let t of c.tags">{{ t }}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+</div>
+
+
+<div class="se-card quick-widget">
+  <h3>Hızlı Atama</h3>
+  <p class="muted">Bir kursu bir kullanıcıya ata (simülasyon).</p>
+  <form (submit)="$event.preventDefault(); live.addActivity('Hızlı Atama yapıldı.');">
+    <input placeholder="Kullanıcı Email" />
+    <input placeholder="Kurs ID" />
+    <button class="btn-primary">Ata</button>
+  </form>
+</div>

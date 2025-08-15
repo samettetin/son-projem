@@ -1,0 +1,89 @@
+<div class="dash-hero">
+  <h2>Sistem Yöneticisi Paneli</h2>
+  <div class="muted">Rolünüz: <strong>{{ (auth.getCurrentUser()?.role || 'guest')  }}</strong></div>
+</div>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="logo">SEBA</div>
+    <nav>
+      <a routerLink="/dashboard-admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <span>Genel Bakış</span>
+      </a>
+
+      <a routerLink="/admin-approval" routerLinkActive="active">
+        <span>Üye Onayları</span>
+        <small class="pill" *ngIf="pendingCount>0">{{ pendingCount }}</small>
+      </a>
+
+      <!-- Yeni: Kurs Yönetimi (admin de erişebilir) -->
+      <a routerLink="/admin-courses" routerLinkActive="active">
+  <span>Kurs Yönetimi</span>
+</a>
+
+
+      <!-- Yeni: Organizasyonlar (sadece admin rota korumalı) -->
+      <a routerLink="/admin-organizations" routerLinkActive="active">
+        <span>Organizasyonlar</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <header class="page-head">
+      <div>
+        <h1>Hoş geldiniz, {{ currentUser?.fullName }}</h1>
+        <p>Kurumsal E-Öğrenme için hızlı özet ve kısayollar.</p>
+      </div>
+      <div class="quick-actions">
+        <a class="btn" routerLink="/admin-approval">Onay Bekleyenler</a>
+        <button class="btn outline" (click)="refresh()">Yenile</button>
+      </div>
+    </header>
+
+    <section class="cards">
+      <div class="card">
+        <h3>Toplam Kullanıcı</h3>
+        <p class="big">{{ totals.users }}</p>
+      </div>
+      <div class="card">
+        <h3>Öğrenci</h3>
+        <p class="big">{{ totals.students }}</p>
+      </div>
+      <div class="card warn" [class.attn]="pendingCount>0">
+        <h3>Onay Bekleyen</h3>
+        <p class="big">{{ pendingCount }}</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Hızlı İşlemler</h2>
+      </div>
+      <div class="quick-grid">
+        <a class="qitem" routerLink="/admin-approval">
+          <span class="title">Üst Kademe Üye Onayla</span>
+          <span class="desc">Eğitmen / EM / Observer başvuruları</span>
+        </a>
+
+        <!-- Güncellendi: Kurs Yarat artık dashboard-instructor'a gidiyor -->
+        <a class="qitem" routerLink="/dashboard-instructor">
+          <span class="title">Kurs Yarat (simülasyon)</span>
+          <span class="desc">Müfredat ve modülleri ekle</span>
+        </a>
+
+        <a class="qitem" routerLink="/admin-organizations">
+          <span class="title">Organizasyonlar</span>
+          <span class="desc">Şirket/akademi alanlarını yönet</span>
+        </a>
+
+        <!-- İleride raporlar sayfası gelince bu link güncellenecek -->
+        <!--
+        <a class="qitem" routerLink="/admin-reports">
+          <span class="title">Raporlar</span>
+          <span class="desc">Tamamlama ve başarı trendleri</span>
+        </a>
+        -->
+      </div>
+    </section>
+  </main>
+</div>
